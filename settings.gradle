@@ -1,0 +1,44 @@
+rootProject.name = 'playqd-commons'
+
+include 'playqd-utils'
+include 'playqd-data'
+include 'playqd-media-library-client'
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            version('pluginJib', '3.4.0')
+            version('pluginSpringDependency', '1.1.0')
+
+            version('lombok', '1.18.30')
+            version('logback', '1.4.14')
+            version('fasterxml', '2.15.3')
+
+            version('springDataCommons', '3.2.1')
+            version('springBoot', '3.2.0') // Spring Cloud: 2023.0.0
+            version('springCloud', '2023.0.0') // Spring Boot: 3.2.0
+
+            version('junitJupiter', '5.10.1')
+            version('junitPlatform', '1.10.1')
+
+            library ('javax-validation', 'jakarta.validation', 'jakarta.validation-api').version('3.0.2')
+
+            library('lombok', 'org.projectlombok', 'lombok').versionRef('lombok')
+
+            library('logback-core', 'ch.qos.logback', 'logback-core').versionRef('logback')
+            library('logback-classic', 'ch.qos.logback', 'logback-classic').versionRef('logback')
+
+            library('jackson-annotation', 'com.fasterxml.jackson.core', 'jackson-annotations').versionRef('fasterxml')
+
+            library('spring-data-commons', 'org.springframework.data', 'spring-data-commons').versionRef('springDataCommons')
+            library('spring-cloud-openfeign', 'org.springframework.cloud', 'spring-cloud-starter-openfeign').withoutVersion()
+
+            library('junit-platform-commons', 'org.junit.platform', 'junit-platform-commons').versionRef('junitPlatform')
+            library('junit-platform-engine', 'org.junit.platform', 'junit-platform-engine').versionRef('junitPlatform')
+            library('junit-platform-launcher', 'org.junit.platform', 'junit-platform-launcher').versionRef('junitPlatform')
+            library('junit-jupiter-engine', 'org.junit.jupiter', 'junit-jupiter-engine').versionRef('junitJupiter')
+            library('junit-jupiter-api', 'org.junit.jupiter', 'junit-jupiter-api').versionRef('junitJupiter')
+
+        }
+    }
+}

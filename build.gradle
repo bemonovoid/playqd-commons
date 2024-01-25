@@ -1,0 +1,52 @@
+buildscript {
+    ext {
+        springDependencyVersion = '1.1.0'
+        springCloudVersion = '2023.0.0'
+    }
+}
+plugins {
+    id 'java'
+    id "io.spring.dependency-management" version "${springDependencyVersion}"
+}
+
+allprojects {
+    apply plugin: 'java'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
+        }
+    }
+
+    dependencies {
+        compileOnly libs.lombok
+        annotationProcessor libs.lombok
+
+        implementation libs.logback.classic
+        implementation libs.logback.core
+
+        testCompileOnly libs.lombok
+        testAnnotationProcessor libs.lombok
+
+        testImplementation libs.junit.platform.commons
+        testRuntimeOnly libs.junit.platform.engine
+        testRuntimeOnly libs.junit.platform.launcher
+        testImplementation libs.junit.jupiter.api
+        testImplementation libs.junit.jupiter.engine
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}

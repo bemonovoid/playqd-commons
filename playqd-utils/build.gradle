@@ -1,0 +1,19 @@
+plugins {
+    id 'maven-publish'
+}
+
+dependencies {
+
+}
+
+jar {
+    enabled = true
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}

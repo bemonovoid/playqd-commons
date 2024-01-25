@@ -1,0 +1,22 @@
+plugins {
+    id 'maven-publish'
+}
+
+dependencies {
+
+    compileOnly project (':playqd-data')
+    compileOnly libs.spring.data.commons
+    implementation libs.spring.cloud.openfeign
+}
+
+jar {
+    enabled = true
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}
