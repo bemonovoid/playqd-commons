@@ -5,6 +5,7 @@ plugins {
 dependencies {
     compileOnly libs.javax.validation
     compileOnly libs.jackson.annotation
+    compileOnly libs.spring.data.commons
 }
 
 jar {
