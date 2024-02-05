@@ -7,6 +7,7 @@ import io.playqd.commons.data.MediaItemsCount;
 import io.playqd.commons.data.MusicDirectory;
 import io.playqd.commons.data.MusicDirectoryAction;
 import io.playqd.commons.data.MusicDirectoryContentInfo;
+import io.playqd.commons.data.Playlist;
 import io.playqd.commons.data.Track;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
@@ -104,6 +105,9 @@ public interface MediaLibraryClient {
   default Page<Track> tracksByLocationIn(Pageable page, Set<String> locations) {
     return tracks(page, "", "", "", "", "", null, false, null, locations);
   }
+
+  @GetMapping("/playlists")
+  List<Playlist> getAllPlaylists();
 
   @GetMapping("/directories")
   List<MusicDirectory> musicDirectories();
