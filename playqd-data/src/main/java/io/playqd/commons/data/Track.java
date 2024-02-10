@@ -21,11 +21,7 @@ public record Track(long id,
 
   }
 
-  public record Album(String id, String name, String genreId, String genre, Artwork artwork) {
-
-  }
-
-  public record Artwork(String albumId, String mimeType, long size, String uri) {
+  public record Album(String id, String name, String genreId, String genre) {
 
   }
 
@@ -50,5 +46,4 @@ public record Track(long id,
   public record AdditionalInfo(@JsonFormat(pattern = "dd-MM-yyyy") LocalDate addedToWatchFolderDate) {
 
   }
-
 }

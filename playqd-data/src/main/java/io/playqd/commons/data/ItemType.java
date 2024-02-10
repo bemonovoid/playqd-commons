@@ -8,5 +8,5 @@ public enum ItemType {
 
   imageFile,
 
-  file;
+  otherFile;
 }

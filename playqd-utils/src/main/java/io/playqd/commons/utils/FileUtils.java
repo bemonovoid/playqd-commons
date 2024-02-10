@@ -38,6 +38,15 @@ public abstract class FileUtils {
         return Tuple.from(name, extension);
     }
 
+    public static long getFileSize(Path path) {
+        try {
+            return Files.size(path);
+        } catch (IOException e) {
+            log.error("Failed to get file size.", e);
+            return 0;
+        }
+    }
+
     public static String detectMimeType(Path path) {
         var mimeType = URLConnection.guessContentTypeFromName(path.toString());
         if (mimeType == null) {
@@ -48,7 +57,7 @@ public abstract class FileUtils {
                 return null;
             }
         }
-        return null;
+        return mimeType;
     }
 
     public static LocalDateTime getLastModifiedDate(FileTime fileTime) {

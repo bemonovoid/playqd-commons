@@ -2,6 +2,7 @@ package io.playqd.commons.client;
 
 import io.playqd.commons.data.Album;
 import io.playqd.commons.data.Artist;
+import io.playqd.commons.data.DirectoryItem;
 import io.playqd.commons.data.Genre;
 import io.playqd.commons.data.MediaItemsCount;
 import io.playqd.commons.data.MusicDirectory;
@@ -22,10 +23,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
-import java.util.Set;
 
-@FeignClient(path = "/api/v1", name = "playqd-media-library")
+@FeignClient(path = "/api/v1", name = MediaLibraryClient.CLIENT_NAME)
 public interface MediaLibraryClient {
+
+  String CLIENT_NAME = "playqd-media-library";
+
+  String API_PATH_AUDIO_STREAM = "/api/v1/resources/audio";
+
+  String API_PATH_IMAGE_STREAM = "/api/v1/resources/image";
 
   @GetMapping("/metadata/counts/artists")
   MediaItemsCount artistsCount();
@@ -72,38 +78,39 @@ public interface MediaLibraryClient {
                      @RequestParam(name = "albumId", required = false) String albumId,
                      @RequestParam(name = "genreId", required = false) String genreId,
                      @RequestParam(name = "playlistId", required = false) String playlistId,
+                     @RequestParam(name = "sourceDirId", required = false, defaultValue = "0") long sourceDirId,
                      @RequestParam(name = "title", required = false) String title,
                      @RequestParam(name = "played", required = false) Boolean played,
                      @RequestParam(name = "lastRecentlyAdded", required = false) boolean lastRecentlyAdded,
                      @RequestParam(name = "recentlyAddedSinceDuration", required = false) String recentlyAddedSinceDuration,
-                     @RequestParam(name = "locations", required = false) Set<String> locations);
+                     @RequestParam(name = "location", required = false, defaultValue = "") String location);
 
   default Page<Track> tracksByArtistId(Pageable page, String artistId) {
-    return tracks(page, artistId, "", "", "", "", null, false, null, null);
+    return tracks(page, artistId, "", "", "", 0, "", null, false, null, null);
   }
 
   default Page<Track> tracksByAlbumId(Pageable page, String albumId) {
-    return tracks(page, "", albumId, "", "", "", null, false, null, null);
+    return tracks(page, "", albumId, "", "", 0, "", null, false, null, null);
   }
 
   default Page<Track> tracksByGenreId(Pageable page, String genreId) {
-    return tracks(page, "", "", genreId, "", "", null, false, null, null);
+    return tracks(page, "", "", genreId, "", 0, "", null, false, null, null);
   }
 
   default Page<Track> tracksByPlaylistId(Pageable page, String playlistId) {
-    return tracks(page, "", "", "", playlistId, "", null, false, null, null);
+    return tracks(page, "", "", "", playlistId, 0, "", null, false, null, null);
   }
 
   default Page<Track> tracksLastRecentlyAdded(Pageable page) {
-    return tracks(page, "", "", "", "", "", null, true, null, null);
+    return tracks(page, "", "", "", "", 0, "", null, true, null, null);
   }
 
   default Page<Track> tracksRecentlyPlayed(Pageable page) {
-    return tracks(page, "", "", "", "", "", true, false, null, null);
+    return tracks(page, "", "", "", "", 0, "", true, false, null, null);
   }
 
-  default Page<Track> tracksByLocationIn(Pageable page, Set<String> locations) {
-    return tracks(page, "", "", "", "", "", null, false, null, locations);
+  default Page<Track> tracksByLocation(Pageable page, long sourceDirId, String location) {
+    return tracks(page, "", "", "", "", sourceDirId, "", null, false, null, location);
   }
 
   @GetMapping("/playlists")
@@ -122,4 +129,19 @@ public interface MediaLibraryClient {
   @ResponseStatus(HttpStatus.ACCEPTED)
   void submitMusicDirectoryAction(@RequestBody MusicDirectoryAction action);
 
+  @GetMapping("/directories/tree")
+  Page<DirectoryItem> tree(@PageableDefault(size = 1000) Pageable page);
+
+  @GetMapping("/directories/tree/{id}")
+  Page<DirectoryItem> tree(@PathVariable("id") long id,
+                           @RequestParam(name = "path", required = false) String pathBase64Encoded,
+                           @PageableDefault(size = 1000) Pageable page);
+
+  default Page<DirectoryItem> musicDirectoryTree(long id) {
+    return tree(id, "", Pageable.unpaged());
+  }
+
+  default Page<DirectoryItem> musicDirectoryTree(long id, String pathBase64Encoded) {
+    return tree(id, pathBase64Encoded, Pageable.unpaged());
+  }
 }
