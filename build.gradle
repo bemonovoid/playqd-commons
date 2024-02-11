@@ -6,6 +6,7 @@ buildscript {
 }
 plugins {
     id 'java'
+    id 'maven-publish'
     id "io.spring.dependency-management" version "${springDependencyVersion}"
 }
 
@@ -21,6 +22,7 @@ allprojects {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
     apply plugin: 'io.spring.dependency-management'
 
     dependencyManagement {
@@ -49,4 +51,12 @@ subprojects {
     test {
         useJUnitPlatform()
     }
+
+//    publishing {
+//        publications {
+//            maven(MavenPublication) {
+//                from components.java
+//            }
+//        }
+//    }
 }

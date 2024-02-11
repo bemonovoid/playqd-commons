@@ -2,10 +2,6 @@ plugins {
     id 'maven-publish'
 }
 
-dependencies {
-
-}
-
 jar {
     enabled = true
 }
