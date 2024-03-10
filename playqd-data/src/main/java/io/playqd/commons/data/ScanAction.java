@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 @JsonTypeName(ScanAction.TYPE_NAME)
-public class ScanAction extends MusicDirectoryAction {
+public class ScanAction extends WatchFolderAction {
 
   static final String TYPE_NAME = "scan";
 
@@ -12,7 +12,7 @@ public class ScanAction extends MusicDirectoryAction {
 
   @Override
   @JsonIgnore
-  public void accept(MusicDirectoryActionVisitor visitor) {
+  public void accept(WatchFolderActionVisitor visitor) {
     visitor.visit(this);
   }
 }

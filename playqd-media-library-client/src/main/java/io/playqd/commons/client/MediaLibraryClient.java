@@ -2,14 +2,13 @@ package io.playqd.commons.client;
 
 import io.playqd.commons.data.Album;
 import io.playqd.commons.data.Artist;
-import io.playqd.commons.data.DirectoryItem;
 import io.playqd.commons.data.Genre;
 import io.playqd.commons.data.MediaItemsCount;
-import io.playqd.commons.data.MusicDirectory;
-import io.playqd.commons.data.MusicDirectoryAction;
-import io.playqd.commons.data.MusicDirectoryContentInfo;
 import io.playqd.commons.data.Playlist;
 import io.playqd.commons.data.Track;
+import io.playqd.commons.data.WatchFolder;
+import io.playqd.commons.data.WatchFolderAction;
+import io.playqd.commons.data.WatchFolderItem;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -78,70 +77,54 @@ public interface MediaLibraryClient {
                      @RequestParam(name = "albumId", required = false) String albumId,
                      @RequestParam(name = "genreId", required = false) String genreId,
                      @RequestParam(name = "playlistId", required = false) String playlistId,
-                     @RequestParam(name = "sourceDirId", required = false, defaultValue = "0") long sourceDirId,
                      @RequestParam(name = "title", required = false) String title,
                      @RequestParam(name = "played", required = false) Boolean played,
                      @RequestParam(name = "lastRecentlyAdded", required = false) boolean lastRecentlyAdded,
                      @RequestParam(name = "recentlyAddedSinceDuration", required = false) String recentlyAddedSinceDuration,
-                     @RequestParam(name = "location", required = false, defaultValue = "") String location);
+                     @RequestParam(name = "folderId", required = false, defaultValue = "") String folderId);
 
   default Page<Track> tracksByArtistId(Pageable page, String artistId) {
-    return tracks(page, artistId, "", "", "", 0, "", null, false, null, null);
+    return tracks(page, artistId, "", "", "", "", null, false, null, null);
   }
 
   default Page<Track> tracksByAlbumId(Pageable page, String albumId) {
-    return tracks(page, "", albumId, "", "", 0, "", null, false, null, null);
+    return tracks(page, "", albumId, "", "", "", null, false, null, null);
   }
 
   default Page<Track> tracksByGenreId(Pageable page, String genreId) {
-    return tracks(page, "", "", genreId, "", 0, "", null, false, null, null);
+    return tracks(page, "", "", genreId, "", "", null, false, null, null);
   }
 
   default Page<Track> tracksByPlaylistId(Pageable page, String playlistId) {
-    return tracks(page, "", "", "", playlistId, 0, "", null, false, null, null);
+    return tracks(page, "", "", "", playlistId, "", null, false, null, null);
   }
 
   default Page<Track> tracksLastRecentlyAdded(Pageable page) {
-    return tracks(page, "", "", "", "", 0, "", null, true, null, null);
+    return tracks(page, "", "", "", "", "", null, true, null, null);
   }
 
   default Page<Track> tracksRecentlyPlayed(Pageable page) {
-    return tracks(page, "", "", "", "", 0, "", true, false, null, null);
+    return tracks(page, "", "", "", "", "", true, false, null, null);
   }
 
-  default Page<Track> tracksByLocation(Pageable page, long sourceDirId, String location) {
-    return tracks(page, "", "", "", "", sourceDirId, "", null, false, null, location);
+  default Page<Track> tracksByFolderId(String folderId, Pageable page) {
+    return tracks(page, "", "", "", "", "", null, false, null, folderId);
   }
 
   @GetMapping("/playlists")
   List<Playlist> getAllPlaylists();
 
-  @GetMapping("/directories")
-  List<MusicDirectory> musicDirectories();
+  @GetMapping("/folders")
+  List<WatchFolder> watchFolders();
 
-  @GetMapping("/directories/{id}")
-  MusicDirectory get(@PathVariable(name = "id") long id);
-
-  @GetMapping("/directories/{id}/info")
-  MusicDirectoryContentInfo directoryInfo(@PathVariable(name = "id") long id);
-
-  @PostMapping("/directories/actions")
+  @PostMapping("/folders/actions")
   @ResponseStatus(HttpStatus.ACCEPTED)
-  void submitMusicDirectoryAction(@RequestBody MusicDirectoryAction action);
+  void submitWatchFolderAction(@RequestBody WatchFolderAction action);
 
-  @GetMapping("/directories/tree")
-  Page<DirectoryItem> tree(@PageableDefault(size = 1000) Pageable page);
+  @GetMapping("/folders/items")
+  List<WatchFolderItem> watchFolderItems();
 
-  @GetMapping("/directories/tree/{id}")
-  Page<DirectoryItem> tree(@PathVariable("id") long id,
-                           @RequestParam(name = "path", required = false) String pathBase64Encoded,
-                           @PageableDefault(size = 1000) Pageable page);
-
-  default Page<DirectoryItem> musicDirectoryTree(long id) {
-    return tree(id, "", Pageable.unpaged());
-  }
-
-  default Page<DirectoryItem> musicDirectoryTree(long id, String pathBase64Encoded) {
-    return tree(id, pathBase64Encoded, Pageable.unpaged());
-  }
+  @GetMapping("/folders/items/{folderId}")
+  Page<WatchFolderItem> watchFolderItems(@PathVariable("folderId") String folderId,
+                                         @PageableDefault(size = 1000) Pageable page);
 }

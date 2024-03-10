@@ -12,14 +12,14 @@ import lombok.Setter;
 @Setter(AccessLevel.PACKAGE)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(@JsonSubTypes.Type(value = ScanAction.class, name = ScanAction.TYPE_NAME))
-public abstract class MusicDirectoryAction implements VisitableMusicDirectoryAction {
+public abstract class WatchFolderAction implements VisitableWatchFolderAction {
 
   @Positive
   private long id;
 
   @Override
   @JsonIgnore
-  public void accept(MusicDirectoryActionVisitor visitor) {
+  public void accept(WatchFolderActionVisitor visitor) {
     visitor.visit(this);
   }
 }
